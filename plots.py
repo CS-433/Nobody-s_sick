@@ -95,7 +95,7 @@ def plot_loss_variable_gamma(losses_var_gamma, param):
     
     #Loop on the different values of gamma
     for idx, losses in enumerate(losses_var_gamma):
-        ax.semilogy(losses, label = "$\gamma$ = %.1e" % param[idx])
+        ax.semilogy(losses, label = "gamma = %.1e" % param[idx])
     
     plt.title("Loss for different learning rates")
     plt.xlabel("# iterations")

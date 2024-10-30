@@ -9,34 +9,17 @@ from implementations import *
 
 def get_opt_parameter(metric_name, metrics, ws, parameter):
     """Get the best w from the result the optimization algorithm."""
-    if metric_name == 'loss':
-        opt = 'min'
+    if metric_name == 'f1_score':
         metric = metrics[:,0]
-    elif metric_name == 'accuracy':
-        opt = 'max'
-        metric = metrics[:,1]
-    elif metric_name == 'f1_score':
-        opt = 'max'
-        metric = metrics[:,2]
+        return metric[np.argmax(metric)], parameter[np.argmax(metric)], ws[np.argmax(metric)], np.argmax(metric)
     elif metric_name == 'RMSE':
-        opt = 'min'
-        metric = metrics[:,3]
-    elif metric_name == 'R_squared':
-        opt = 'max'
-        metric = metrics[:,4]
-    
-    if opt == 'min':
-        return metric[np.argmin(metric)], parameter[np.argmin(metric)], np.argmin(metric), ws[np.argmin(metric)]
-    elif opt == 'max':
-        return metric[np.argmax(metric)], parameter[np.argmax(metric)], np.argmax(metric), ws[np.argmax(metric)]
-
+        metric = metrics[:,1]
+        return metric[np.argmin(metric)], parameter[np.argmin(metric)], ws[np.argmin(metric)], np.argmin(metric)
+        
 def get_eval_metrics(metrics, opt_idx):
-    loss = metrics[opt_idx, 0]
-    accuracy = metrics[opt_idx, 1]
-    f1_score = metrics[opt_idx, 2]
-    rmse = metrics[opt_idx, 3]
-    r2 = metrics[opt_idx, 4]
-    return loss, accuracy, f1_score, rmse, r2
+    f1_score = metrics[opt_idx, 0]
+    rmse = metrics[opt_idx, 1]
+    return f1_score, rmse
 
 def print_report(opt_w, is_LR, tx_training_balanced, y_training_balanced, tx_training_imbalanced, y_training_imbalanced, tx_train_validation, y_train_validation, tx_test):
 
@@ -73,18 +56,20 @@ def print_report(opt_w, is_LR, tx_training_balanced, y_training_balanced, tx_tra
     sick_test_pred = np.sum(y_test_pred == 1)/ len(y_test_pred)
     print('Test set: Predicted {p:.3f}.'.format(p=sick_test_pred))
     
-def hyperparam_optimization(eval_metric_name, eval_metrics, ws, params, param_name, tx_training_balanced, y_training_balanced, tx_train_training, y_train_training, tx_train_validation, y_train_validation, tx_test, is_LR):
+def hyperparam_optimization(metric_name, metrics, ws, params, param_name, tx_training_balanced, y_training_balanced, tx_train_training, y_train_training, tx_train_validation, y_train_validation, tx_test, is_LR):
 
-    opt_metric, opt_param, opt_idx, opt_w = get_opt_parameter(eval_metric_name, eval_metrics, ws, params)
-    loss, accuracy, f1_score, rmse, r2 = get_eval_metrics(eval_metrics, opt_idx)
+    opt_metric, opt_param, opt_w, opt_idx = get_opt_parameter(metric_name, metrics, ws, params)
+    f1_score, rmse = get_eval_metrics(metrics, opt_idx)
 
-    print('The optimal parameter is {param}={p:.3f} given optimization of the metric {metr} evaluating {m:.5f}.'.format(param = param_name, p=opt_param, metr=eval_metric_name, m=opt_metric))
+    print('The optimal parameter is {param}={p:.6f} given optimization of the metric {metr} evaluating {m:.5f}.'.format(param = param_name, p=opt_param, metr=metric_name, m=opt_metric))
     print('The optimal weights are w = {}.'.format(opt_w))
-    print('Other metrics evaluated for the model selection \nLoss = {l:.3f}, Accuracy = {a:.3f}, f1 score = {f:.3f}, RMSE = {r:.3f}, R squared = {rs:.3f} \n'.format(l=loss, a=accuracy, f=f1_score, r=rmse, rs=r2))
+    print('f1 score = {f:.5f}, RMSE = {r:.5f}\n'.format(f=f1_score, r=rmse))
 
     print('*******************************\n')
+    
     # True Vs. Predicted positive class (Heart Attack Rate)
     print_report(opt_w, is_LR, tx_training_balanced, y_training_balanced, tx_train_training, y_train_training, tx_train_validation, y_train_validation, tx_test)
+    return opt_idx
     
 
 def confusion_matrix_metrics(y_true, y_pred):
@@ -114,21 +99,6 @@ def confusion_matrix_metrics(y_true, y_pred):
 
     return tp, tn, fp, fn
 
-def r_squared(y_true, y_pred):
-    # Convert to numpy arrays
-    y_true = np.asarray(y_true)
-    y_pred = np.asarray(y_pred)
-    
-    # Calculate the total sum of squares (SST)
-    sst = np.sum((y_true - np.mean(y_true)) ** 2)
-    
-    # Calculate the residual sum of squares (SSR)
-    ssr = np.sum((y_true - y_pred) ** 2)
-    
-    # Calculate R-squared
-    r2 = 1 - (ssr / sst)
-    
-    return r2
 
 def train_vs_valid(tx_training_balanced, y_training_balanced, tx_training_imbalanced, y_training_imbalanced, ws, learning_rate):
     rmse_training_balanced = np.zeros(len(learning_rate))
