@@ -5,7 +5,6 @@ This project is part of the EPFL CS-433 Machine Learning course, providing stude
 ## Table of Contents
 - [About](#about)
 - [Getting Started](#getting-started)
-- [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -22,22 +21,11 @@ Please refer to the list below for an overview of each files' functionality:
 Ensure that the data required for `run.ipynb` is placed in a folder named `data` within the same repository `run` - where the `run.ipynb` file is located. The `data` folder should contain the following CSV files: `x_train.csv`, `x_test.csv`, `y_train.csv`, `train_ids.csv`, and `test_ids.csv`.
 
 ### Prerequisites
-Python 3.8 is required. 
-The libraries 
-- numpy
-- seaborn
-- matplotlib
+This project requires Python 3.8 and the following libraries:
 
-## Installation
-1. Clone the repo
-    ```bash
-    git clone https://github.com/yourusername/project-name.git
-    ```
-2. Install dependencies
-    ```bash
-    pip install -r requirements.txt
-    ```
-3. Any additional setup steps.
+- **numpy**
+- **seaborn**
+- **matplotlib**
 
 ## Usage
 1. Navigate to the `run` directory and ensure that the data is placed in a folder named `data` within the same repository - where the `run.ipynb` file is located.
