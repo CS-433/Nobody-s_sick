@@ -6,7 +6,22 @@ import os
 
 from implementations import * 
 
+def highly_correlated_features(w, feature_cat_map, feature_cont_map, categorical_features, continuous_features, duplicate_categories):
+    
+    w_cat = w[1:len(feature_cat_map)+1]
+    w_cont = w[len(feature_cat_map)+1:]
 
+    cat_feat_idx = feature_cat_map[np.argmax(w_cat)]
+    cont_feat_idx = feature_cont_map[np.argmax(w_cont)]
+
+    correlated_cat_feat = categorical_features[cat_feat_idx]
+    correlated_cont_feat = continuous_features[cont_feat_idx]
+    
+    for _, dupl_cat in enumerate(duplicate_categories):
+        if np.isin(correlated_cat_feat, dupl_cat).any():
+            print('The features {} explain the same variance.'.format(dupl_cat))
+    return correlated_cat_feat, correlated_cont_feat
+    
 def get_opt_parameter(metric_name, metrics, ws, parameter):
     """Get the best w from the result the optimization algorithm."""
     if metric_name == 'f1_score':
@@ -28,41 +43,41 @@ def print_report(opt_w, is_LR, tx_training_balanced, y_training_balanced, tx_tra
     else:
         threshold = 0.5
     
-    print('True Vs. Predicted positive class (Heart Attack Rate) \n')
+    print('-----------True Vs. Predicted positive class (Heart Attack Rate)-------------- \n')
     # train set balanced
     sick_train_balanced = np.sum(y_training_balanced == 1)/ len(y_training_balanced)
     y_train_balanced_pred = tx_training_balanced.dot(opt_w)
     y_train_balanced_pred = np.where(y_train_balanced_pred > threshold, 1, 0)
     sick_train_balanced_pred = np.sum(y_train_balanced_pred == 1)/len(y_train_balanced_pred)
-    print('Train set balanced: True {t:.3f}, Predicted {p:.3f}.'.format(t=sick_train_balanced, p=sick_train_balanced_pred))
+    print('Train set balanced:\nTrue {t:.3f}, Predicted {p:.3f}.'.format(t=sick_train_balanced, p=sick_train_balanced_pred))
     
     # train set imbalanced
     sick_train_imbalanced = np.sum(y_training_imbalanced == 1)/ len(y_training_imbalanced)
     y_train_imbalanced_pred = tx_training_imbalanced.dot(opt_w)
     y_train_imbalanced_pred = np.where(y_train_imbalanced_pred > threshold, 1, 0)
     sick_train_imbalanced_pred = np.sum(y_train_imbalanced_pred == 1)/ len(y_train_imbalanced_pred)
-    print('Train set original: True {t:.3f}, Predicted {p:.3f}.'.format(t=sick_train_imbalanced, p=sick_train_imbalanced_pred))
+    print('Train set original:\nTrue {t:.3f}, Predicted {p:.3f}.'.format(t=sick_train_imbalanced, p=sick_train_imbalanced_pred))
     
     # validation set
     sick_validation = np.sum(y_train_validation == 1)/ len(y_train_validation)
     y_validation_pred = tx_train_validation.dot(opt_w)
     y_validation_pred = np.where(y_validation_pred > threshold, 1, 0)
     sick_validation_pred = np.sum(y_validation_pred == 1)/ len(y_validation_pred)
-    print('Validation set: True {t:.3f}, Predicted {p:.3f}.'.format(t=sick_validation, p=sick_validation_pred))
+    print('Validation set:\nTrue {t:.3f}, Predicted {p:.3f}.'.format(t=sick_validation, p=sick_validation_pred))
     
     # test set
     y_test_pred = tx_test.dot(opt_w)
     y_test_pred = np.where(y_test_pred > threshold, 1, 0)
     sick_test_pred = np.sum(y_test_pred == 1)/ len(y_test_pred)
-    print('Test set: Predicted {p:.3f}.'.format(p=sick_test_pred))
+    print('Test set:\nPredicted {p:.3f}.'.format(p=sick_test_pred))
     
 def hyperparam_optimization(metric_name, metrics, ws, params, param_name, tx_training_balanced, y_training_balanced, tx_train_training, y_train_training, tx_train_validation, y_train_validation, tx_test, is_LR):
 
     opt_metric, opt_param, opt_w, opt_idx = get_opt_parameter(metric_name, metrics, ws, params)
     f1_score, rmse = get_eval_metrics(metrics, opt_idx)
 
-    print('The optimal parameter is {param}={p:.6f} given optimization of the metric {metr} evaluating {m:.5f}.'.format(param = param_name, p=opt_param, metr=metric_name, m=opt_metric))
-    print('The optimal weights are w = {}.'.format(opt_w))
+    print('The optimal parameter is {param}={p:.6f} given optimization of the metric {metr} evaluating {m:.5f}.\n'.format(param = param_name, p=opt_param, metr=metric_name, m=opt_metric))
+    print('The optimal weights are w = {}\n.'.format(opt_w))
     print('f1 score = {f:.5f}, RMSE = {r:.5f}\n'.format(f=f1_score, r=rmse))
 
     print('*******************************\n')

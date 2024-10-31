@@ -312,8 +312,8 @@ def preprocess_data(X, feature_names, categorical_features_idx, continuous_featu
             # encode
             one_hot_encoded, unique_categories = one_hot_encode(column_data)
             X_encoded.append(one_hot_encoded)
-            feature_cat_map.append(col * np.ones(len(unique_categories)))
-            feature_cat_encoded_map.append(np.arange(len(unique_categories)))
+            feature_cat_map.append((col * np.ones(len(unique_categories))).astype(int))
+            feature_cat_encoded_map.append((np.arange(len(unique_categories))).astype(int))
         X_encoded = np.hstack(X_encoded)
         feature_cat_map = np.hstack(feature_cat_map)
         feature_cat_encoded_map = np.hstack(feature_cat_encoded_map)
@@ -334,7 +334,7 @@ def preprocess_data(X, feature_names, categorical_features_idx, continuous_featu
     
             # standardize
             X_standardized[:,col], mean_X[col], std_X[col] = standardize(column_data)
-        feature_cont_map = np.arange(np.shape(data)[1])
+        feature_cont_map = (np.arange(np.shape(data)[1])).astype(int)
     else:
         X_standardized = []
         mean_X = []

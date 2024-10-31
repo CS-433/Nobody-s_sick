@@ -50,7 +50,7 @@ def plot_histograms(data_list, features_list, num_cols=4):
     plt.tight_layout()
     plt.show()
 
-def plot_boxplots(data_list, features_list, num_cols=4):
+def plot_violinplots(data_list, features_list, num_cols=4):
     """
     Creates histograms for the given data.
 
@@ -88,16 +88,14 @@ def plot_boxplots(data_list, features_list, num_cols=4):
     plt.tight_layout()
     plt.show()
 
-
-def plot_loss_variable_gamma(losses_var_gamma, param):
-    
+def plot_loss_variable_param(losses_var_param, param, param_name):
     ax = plt.axes()
     
-    #Loop on the different values of gamma
-    for idx, losses in enumerate(losses_var_gamma):
-        ax.semilogy(losses, label = "gamma = %.1e" % param[idx])
+    # Loop through each set of losses for different values of the parameter
+    for idx, losses in enumerate(losses_var_param):
+        ax.semilogy(losses, label="{name} = {p:.6f}".format(name=param_name, p=param[idx]))
     
-    plt.title("Loss for different learning rates")
+    plt.title("Loss for different {}".format(param_name))
     plt.xlabel("# iterations")
     plt.ylabel("Loss")
     
