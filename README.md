@@ -18,7 +18,7 @@ Please refer to the list below for an overview of each files' functionality:
 - `helpers.py`: Includes functions for loading and exporting data, its manipulation and exploration.
 - `data_preprocessing.py`: Includes functions for data cleaning, preprocessing, feature selection.
 - `plot.py`: Contains functions for visualization.
-Ensure that the data required for `run.ipynb` is placed in a folder named `data` within the same repository `run` - where the `run.ipynb` file is located. The `data` folder should contain the following CSV files: `x_train.csv`, `x_test.csv`, `y_train.csv`, `train_ids.csv`, and `test_ids.csv`.
+Ensure that the data required for `run.ipynb` is placed in a folder named `data` within the same repository - where the `run.ipynb` file is located. The `data` folder should contain the following CSV files: `x_train.csv`, `x_test.csv`, `y_train.csv`, `train_ids.csv`, and `test_ids.csv`.
 
 ### Prerequisites
 This project requires Python 3.8 and the following libraries:

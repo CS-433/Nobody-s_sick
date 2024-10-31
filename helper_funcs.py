@@ -6,21 +6,24 @@ import os
 
 from implementations import * 
 
-def highly_correlated_features(w, feature_cat_map, feature_cont_map, categorical_features, continuous_features, duplicate_categories):
+def highly_correlated_features(w, feature_cat_map, feature_cat_encoded_map, feature_cont_map, categorical_features, continuous_features, top_n):
     
     w_cat = w[1:len(feature_cat_map)+1]
     w_cont = w[len(feature_cat_map)+1:]
 
-    cat_feat_idx = feature_cat_map[np.argmax(w_cat)]
-    cont_feat_idx = feature_cont_map[np.argmax(w_cont)]
+    sorted_indices_cat = np.argsort(w_cat)
+    top_n_indices_cat = sorted_indices_cat[-top_n:]
+
+    sorted_indices_cont = np.argsort(w_cont)
+    top_n_indices_cont = sorted_indices_cont[-top_n:]
+
+    cat_feat_idx = feature_cat_map[top_n_indices_cat]
+    cont_feat_idx = feature_cont_map[top_n_indices_cont]
 
     correlated_cat_feat = categorical_features[cat_feat_idx]
     correlated_cont_feat = continuous_features[cont_feat_idx]
-    
-    for _, dupl_cat in enumerate(duplicate_categories):
-        if np.isin(correlated_cat_feat, dupl_cat).any():
-            print('The features {} explain the same variance.'.format(dupl_cat))
-    return correlated_cat_feat, correlated_cont_feat
+
+    return correlated_cat_feat, feature_cat_encoded_map[top_n_indices_cat], correlated_cont_feat
     
 def get_opt_parameter(metric_name, metrics, ws, parameter):
     """Get the best w from the result the optimization algorithm."""

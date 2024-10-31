@@ -152,7 +152,7 @@ def mean_squared_error_sgd(y, tx, w_initial, max_iters, gamma):
         ws: a list of length max_iters containing the model parameters as numpy arrays of shape (2, ), for each iteration of SGD
     """
 
-    batch_size = 1
+    batch_size = 64
     # Define parameters to store w and loss
     ws = [w_initial]
     losses = []
