@@ -170,8 +170,36 @@ def clean_data(X, feature_names, features_to_keep):
             data[np.isnan(column_data), col] = median_value
 
         X[:,continuous_features_idx] = data
-    return X, feature_names, continuous_features_idx, categorical_features_idx, binary_features_idx
+    return X, feature_names, continuous_features_idx, categorical_features_idx
 
+def pca_with_n_components(data, n_components):
+    """
+    Perform PCA and return the indices of the top n_components.
+    
+    Parameters:
+        data (np.ndarray): The input data (n_samples x n_features).
+        n_components (int): The number of principal components to keep.
+    
+    Returns:
+        np.ndarray: Indices of the selected principal components.
+    """
+    
+    # Step 2: Compute the covariance matrix
+    cov_matrix = np.cov(data, rowvar=False)
+    
+    # Step 3: Perform eigen decomposition
+    eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
+    
+    # Step 4: Sort eigenvalues in descending order
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[sorted_indices]
+    eigenvectors = eigenvectors[:, sorted_indices]
+
+    # Step 5: Retrieve the indices of the top n_components
+    significant_components_indices = sorted_indices[:n_components]
+    
+    return significant_components_indices
+    
 def pca_with_variance_threshold(data, variance_threshold=0.80):
     
     # Step 2: Compute the covariance matrix
@@ -218,11 +246,53 @@ def mca_with_kaiser(data):
     significant_components_indices = np.where(eigenvalues > 1)[0]
     return significant_components_indices
 
-def feature_selection(X_cat, X_cont):
+def mca_with_n_components(data, n_components):
+    """
+    Perform Multiple Correspondence Analysis (MCA) and return the indices of the top n_components.
+    
+    Parameters:
+        data (np.ndarray): The input data (n_samples x n_features) in the form of dummy variables.
+        n_components (int): The number of components to keep.
+    
+    Returns:
+        np.ndarray: Indices of the selected components.
+    """
+    
+    # Step 2: Compute the Correspondence Matrix
+    # Create the contingency table
+    contingency_table = np.dot(data.T, data)
+
+    # Step 3: Perform Eigen Decomposition
+    # Normalize the contingency table
+    n = data.shape[0]
+    norm_table = contingency_table / n
+
+    # Calculate eigenvalues and eigenvectors
+    eigenvalues, eigenvectors = np.linalg.eigh(norm_table)
+
+    # Step 4: Sort eigenvalues and corresponding eigenvectors
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[sorted_indices]
+    eigenvectors = eigenvectors[:, sorted_indices]
+
+    # Step 5: Retrieve the indices of the top n_components
+    significant_components_indices = sorted_indices[:n_components]
+    
+    return significant_components_indices
+
+def feature_selection(X_cat, X_cont, n_comp_cat, n_comp_cont):
+
+    # Feature selection based on significance of predictors 
+    selected_cat_features_idx = mca_with_n_components(X_cat, n_comp_cat)
+    selected_cont_features_idx = pca_with_n_components(X_cont, n_comp_cont)
+    
+    return selected_cat_features_idx, selected_cont_features_idx
+
+def feature_selection_no_given_n_components(X_cat, X_cont):
 
     # Feature selection based on significance of predictors 
     selected_cat_features_idx = mca_with_kaiser(X_cat)
-    selected_cont_features_idx = pca_with_variance_threshold(X_cont, variance_threshold=0.80)
+    selected_cont_features_idx = pca_with_variance_threshold(X_cont)
     
     return selected_cat_features_idx, selected_cont_features_idx
 
@@ -242,8 +312,8 @@ def preprocess_data(X, feature_names, categorical_features_idx, continuous_featu
             # encode
             one_hot_encoded, unique_categories = one_hot_encode(column_data)
             X_encoded.append(one_hot_encoded)
-            feature_cat_map.append(col * np.ones(len(unique_categories)))
-            feature_cat_encoded_map.append(np.arange(len(unique_categories)))
+            feature_cat_map.append((col * np.ones(len(unique_categories))).astype(int))
+            feature_cat_encoded_map.append((np.arange(len(unique_categories))).astype(int))
         X_encoded = np.hstack(X_encoded)
         feature_cat_map = np.hstack(feature_cat_map)
         feature_cat_encoded_map = np.hstack(feature_cat_encoded_map)
@@ -264,7 +334,7 @@ def preprocess_data(X, feature_names, categorical_features_idx, continuous_featu
     
             # standardize
             X_standardized[:,col], mean_X[col], std_X[col] = standardize(column_data)
-        feature_cont_map = np.arange(np.shape(data)[1])
+        feature_cont_map = (np.arange(np.shape(data)[1])).astype(int)
     else:
         X_standardized = []
         mean_X = []

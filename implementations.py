@@ -29,7 +29,9 @@ def sigmoid(t):
     Returns:
         scalar or numpy array
     """
-    return 1.0 / (1 + np.exp(-t))
+    epsilon = 1e-15
+    pred = 1.0 / (1 + np.exp(-t)) 
+    return np.clip(pred, epsilon, 1 - epsilon)
 
 """Gradient descent"""
 
