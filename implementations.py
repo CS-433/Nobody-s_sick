@@ -2,7 +2,7 @@
 
 import numpy as np
 
-threshold = 1e-4
+threshold = 1e-5
 
 def standardize(x):
     """Standardize the original data set."""

@@ -170,9 +170,9 @@ def clean_data(X, feature_names, features_to_keep):
             data[np.isnan(column_data), col] = median_value
 
         X[:,continuous_features_idx] = data
-    return X, feature_names, continuous_features_idx, categorical_features_idx
+    return X, feature_names, categorical_features_idx, continuous_features_idx
 
-def remove_duplicate_columns(data):
+def duplicate_columns(data):
     # Transpose data for column-wise uniqueness check while preserving order
     data_t = data.T
     

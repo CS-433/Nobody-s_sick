@@ -33,5 +33,6 @@ This project requires Python 3.8 and the following libraries:
 
 ## Acknowledgments
 - [Machine Learning Project 1 GitHub repo](https://github.com/epfml/ML_course/tree/main/projects/project1).
+- [2015 Codebook Report](https://www.cdc.gov/brfss/annual_data/2015/pdf/codebook15_llcp.pdf).
 - This work results from the collaboration of Ginevra Larroux and Antoine Vincent, EPFL Master's students in Energy Science and Technology.
 
