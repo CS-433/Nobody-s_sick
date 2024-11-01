@@ -170,7 +170,26 @@ def clean_data(X, feature_names, features_to_keep):
             data[np.isnan(column_data), col] = median_value
 
         X[:,continuous_features_idx] = data
-    return X, feature_names, continuous_features_idx, categorical_features_idx
+    return X, feature_names, categorical_features_idx, continuous_features_idx
+
+def duplicate_columns(data):
+    # Transpose data for column-wise uniqueness check while preserving order
+    data_t = data.T
+    
+    # Dictionary to track first occurrence of unique columns
+    unique_columns, indices = np.unique(data_t, axis=0, return_index=True)
+    
+    # Sort indices to preserve the original order of columns
+    sorted_indices = np.sort(indices)
+    unique_values = data[:, sorted_indices]
+    
+    # Inverse mapping and counts
+    _, unique_inverse, counts = np.unique(data_t, axis=0, return_inverse=True, return_counts=True)
+    
+    # Group duplicate column indices by their unique category
+    duplicate_indices_grouped = [np.where(unique_inverse == i)[0].tolist() for i in range(len(counts)) if counts[i] > 1]
+
+    return sorted_indices, duplicate_indices_grouped
 
 def pca_with_n_components(data, n_components):
     """
@@ -193,12 +212,14 @@ def pca_with_n_components(data, n_components):
     # Step 4: Sort eigenvalues in descending order
     sorted_indices = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[sorted_indices]
-    eigenvectors = eigenvectors[:, sorted_indices]
+    # eigenvectors = eigenvectors[:, sorted_indices]
 
     # Step 5: Retrieve the indices of the top n_components
     significant_components_indices = sorted_indices[:n_components]
+    # Step 6: Sort the indices in increasing order
+    sorted_significant_indices = np.sort(significant_components_indices)
     
-    return significant_components_indices
+    return sorted_significant_indices
     
 def pca_with_variance_threshold(data, variance_threshold=0.80):
     
@@ -278,7 +299,10 @@ def mca_with_n_components(data, n_components):
     # Step 5: Retrieve the indices of the top n_components
     significant_components_indices = sorted_indices[:n_components]
     
-    return significant_components_indices
+    # Step 6: Sort the indices in increasing order
+    sorted_significant_indices = np.sort(significant_components_indices)
+    
+    return sorted_significant_indices
 
 def feature_selection(X_cat, X_cont, n_comp_cat, n_comp_cont):
 
@@ -313,7 +337,7 @@ def preprocess_data(X, feature_names, categorical_features_idx, continuous_featu
             one_hot_encoded, unique_categories = one_hot_encode(column_data)
             X_encoded.append(one_hot_encoded)
             feature_cat_map.append((col * np.ones(len(unique_categories))).astype(int))
-            feature_cat_encoded_map.append((np.arange(len(unique_categories))).astype(int))
+            feature_cat_encoded_map.append((unique_categories).astype(int))
         X_encoded = np.hstack(X_encoded)
         feature_cat_map = np.hstack(feature_cat_map)
         feature_cat_encoded_map = np.hstack(feature_cat_encoded_map)

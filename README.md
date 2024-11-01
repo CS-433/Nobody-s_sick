@@ -15,10 +15,12 @@ The goal of the project is to apply machine learning techniques to determine the
 Navigate to the `run` directory to access and run the code.
 Please refer to the list below for an overview of each files' functionality:
 - `implementations.py`: Defines machine learning models used for training.
-- `helpers.py`: Includes functions for loading and exporting data, its manipulation and exploration.
+- `helpers.py`: Includes functions for loading and exporting data.
+- `helper_funcs.py`: Includes functions for data manipulation and exploration.
 - `data_preprocessing.py`: Includes functions for data cleaning, preprocessing, feature selection.
-- `plot.py`: Contains functions for visualization.
-Ensure that the data required for `run.ipynb` is placed in a folder named `data` within the same repository `run` - where the `run.ipynb` file is located. The `data` folder should contain the following CSV files: `x_train.csv`, `x_test.csv`, `y_train.csv`, `train_ids.csv`, and `test_ids.csv`.
+- `plots.py`: Contains functions for visualization.
+- `cross_validation.py`: Contains functions for cross validation.
+Ensure that the data required for `run.ipynb` is placed in a folder named `data` within the same repository - where the `run.ipynb` file is located. The `data` folder should contain the following CSV files: `x_train.csv`, `x_test.csv`, `y_train.csv`, `train_ids.csv`, and `test_ids.csv`.
 
 ### Prerequisites
 This project requires Python 3.8 and the following libraries:
@@ -28,10 +30,11 @@ This project requires Python 3.8 and the following libraries:
 - **matplotlib**
 
 ## Usage
-1. Navigate to the `run` directory and ensure that the data is placed in a folder named `data` within the same repository - where the `run.ipynb` file is located.
+1. Ensure that the data is placed in a folder named `data` within the same repository - where the `run.ipynb` file is located.
 2. Run the `run.ipynb` file.
 
 ## Acknowledgments
-- [Machine Learning Project 1 GitHub repo](https://github.com/epfml/ML_course/tree/main/projects/project1).
+- [Machine Learning Project 1 GitHub repo](https://github.com/epfml/ML_course/tree/main/projects/project1) - class project repository.
+- [2015 Codebook Report](https://www.cdc.gov/brfss/annual_data/2015/pdf/codebook15_llcp.pdf) - context-specific information on the survey
 - This work results from the collaboration of Ginevra Larroux and Antoine Vincent, EPFL Master's students in Energy Science and Technology.
 

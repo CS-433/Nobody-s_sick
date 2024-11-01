@@ -1,4 +1,4 @@
-"""function for plot."""
+"""functions for plot."""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -112,7 +112,7 @@ def plot_train_test(ax, title, train_errors, test_errors, params, param_name):
     degree is just used for the title of the plot.
     """
     ax.semilogx(params, train_errors, color="b", marker="*", label="Train error")
-    ax.semilogx(params, test_errors, color="r", marker="*", label="Test error")
+    ax.semilogx(params, test_errors, color="r", marker="*", label="Validation error")
     ax.set_xlabel(param_name)
     ax.set_ylabel("RMSE")
     ax.set_title(title)
