@@ -71,7 +71,7 @@ def mean_squared_error_gd(y, tx, w_initial, max_iters, gamma):
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
             
-    print("loss={l}".format(l=losses[-1]))
+    # print("loss={l}".format(l=losses[-1]))
     return losses, ws
     
 """Stochastic gradient descent"""
@@ -177,7 +177,7 @@ def mean_squared_error_sgd(y, tx, w_initial, max_iters, gamma):
             if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
                 break
             
-    print("loss={l}".format(l=losses[-1]))
+    # print("loss={l}".format(l=losses[-1]))
     return losses, ws
 
 """Least squares"""
@@ -249,7 +249,7 @@ def logistic_regression(y, tx, w_initial, max_iters, gamma):
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
 
-    print("loss={l}".format(l=losses[-1]))
+    # print("loss={l}".format(l=losses[-1]))
     return losses, ws
 
 
@@ -292,5 +292,5 @@ def reg_logistic_regression(y, tx, w_initial, max_iters, gamma, lambda_):
         # if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
         #    break
 
-    print("loss={l}".format(l=losses[-1]))
+    # print("loss={l}".format(l=losses[-1]))
     return losses, ws

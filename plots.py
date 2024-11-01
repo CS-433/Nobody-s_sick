@@ -1,4 +1,4 @@
-"""function for plot."""
+"""functions for plot."""
 
 import matplotlib.pyplot as plt
 import numpy as np
